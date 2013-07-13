@@ -1,16 +1,5 @@
-import facebook as f
 import socket, ssl, json, struct
 import binascii
-
-def get_friends(token):
-    graph = f.GraphAPI(token)
-    friends = graph.get_connections('me','friends')['data']
-    return friends
-
-def confirm_friend(confirm):
-    if confirm:
-        True
-    return False
 
 def send_push_notification(thePayLoad,device_token):
     try:
