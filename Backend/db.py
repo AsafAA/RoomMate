@@ -51,8 +51,9 @@ class Backend():
         return decode_user(self._get_user_info(fb_id)['Data'])
 
     def add_link(self, my_token, my_id, friend_id):
-        # TODO Send notification to friend
-        return
+        device_token = 
+        pay_load = #Kern
+        fb_api.send_push_notification(thePayLoad=pay_load)
 
     def confirm_link(self, my_token, my_id, friend_id):
         # TODO Confirm notification here
