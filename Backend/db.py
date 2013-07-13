@@ -1,6 +1,31 @@
-import time
 from pymongo import MongoClient
+from sets import Set
 
+
+def encode_user(user):
+    return {'_type': 'User',
+            'username': user.username,
+            'fb_id': user.fb_id,
+            'location': user.location,
+            'neighbors': user.neighbors}
+
+
+def decode_user(doc):
+    assert doc['_type'] == 'User'
+    return User(doc['username'],
+                doc['fb_id'],
+                doc['location'],
+                doc['neighbors'])
+
+
+class User():
+    def __init__(self, fb_id, location, neighbors):
+        self.fb_id = fb_id
+        self.location = location
+        self.neighbors = neighbors
+
+    def update_location(self, location):
+        self.location = location
 
 class Backend():
     def __init__(self):
@@ -8,52 +33,32 @@ class Backend():
         self.db = self.client.main_database
         # Collection for usernames and logins
         self.users = self.db.users
+        self.user_ids = {}
 
-    def _get_user_info(self, username):
+    def _get_user_info(self, fb_id):
         # Returns document corresponding to a particular user
-        return self.users.find_one({'Username': username})
+        return self.users.find_one({'ID': fb_id})
 
-    def add_user(self, username, password):
-        doc = {'Username': username,
-               'Location': None,
-               'Neighbors': []}
+    def add_user(self, fb_id, fb_token):
+        self.user_ids[fb_id] = fb_token
+        data = User(fb_token, None, [])
+        doc = {'ID': fb_token,
+               'Data': encode_user(data)}
         self.users.insert(doc)
         return True
 
-    def fb_login(self, username, password):
-        # TODO: Check for facebook login here
-        return True
+    def get_user(self, fb_id):
+        return decode_user(self._get_user_info(fb_id)['Data'])
+    
+    def add_link(self, my_token, friend_id):
+        # Send notification to friend
+        self.pending.append((my_token, friend_id))
+        return
 
-    def update_location(self, username, location):
-        self._get_user_info(username)['Location'] = location
-
-    def get_location(self, username):
-        return self._get_user_info(username)['Location']
-
-    def add_neighbor(self, username, neighbor):
-        # TODO: There's probably a better way of doing this
-        return_val = False
-        # 0 = Pending
-        # 1 = Accept
-        # 2 = Reject
-        res_val = 0
-        while True:
-            # Check for response here
-            if res_val == 1:
-                print '{0} and {1} are now linked!'.format(username, neighbor)
-                doc = self._get_user_info(username)
-                doc['Neighbors'].append(neighbor)
-                return_val = True
-                break
-            elif res_val == 2:
-                print '{0} and {1} link not accepted =('.format(username, neighbor)
-                break
-            else:
-                time.sleep(5)
-                
-        return return_val
-
-
+    def confirm_link(self, my_id, friend_id):
+        me = self.get_user(my_id)
+        friend = self.get_user(friend_id)
+        me.neighbors.append(friend_id)
 
 def main():
     backend = Backend()
@@ -63,13 +68,16 @@ def main():
 
     backend.add_user(test_login, test_password)
 
-
-    login_res = backend.fb_login(test_login, test_password)
-    if not login_res:
-        print 'Login not accepted =('
+    res_val = backend.add_user(test_login, test_password)
+    if not res_val:
+        print 'User add failed'
         return False
 
-    # Location: (longitude, latitude, accuracy) 
-        
+    # Location: (longitude, latitude, accuracy)
+    user = backend.login(test_login, test_password)
+    user.update_location((10, 10, 10))
+    print user.location
+
+
 if __name__ == '__main__':
     main()
