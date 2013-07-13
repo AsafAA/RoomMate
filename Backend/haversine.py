@@ -1,7 +1,7 @@
 import math
 
 
-def haversineDist((lat1, lon1, acc1),(lat2,lon2, acc2)):
+def haversineDist((lat1, lon1, acc1), (lat2, lon2, acc2)):
     """Calculates haversine distance between two latitude/longitude
     coordinates with accuracy
 
@@ -29,22 +29,14 @@ def isWithinThresh(coord1, coord2, thresh):
 
     return (haversineDist(coord1, coord2) <= thresh)
 
-def multipleUserThresh(user, roommateDict, thresh):
+def multipleUserThresh(user_coord, roommateDict, thresh):
     """returns the a list of the IDs of the users that are within thresh distance
 
     arguments:
-    user - (lat, lon, acc)
+    user_coord - (lat, lon, acc)
     roommateList - {'id': (lat, lon, acc), 'id':(lat, lon, acc)...}
     thresh - meters (double) """
     
-    return [key for key in roommateDict.keys() if isWithinThresh(user, roommateDict[key], thresh)]
+    return [key for key in roommateDict.keys() if isWithinThresh(user_coord, roommateDict[key], thresh)]
 
 
-aepi = (37.867062,-122.251914, 0)
-topDog = (37.868315,-122.257472, 0)
-channing = (37.867551,-122.254256, 3.2)
-haste = (37.866611,-122.25409, 4.3)
-
-
-print(isWithinThresh(channing, haste, 97))
-print(multipleUserThresh(haste, {'aepi':aepi, 'channing':channing, 'haste':haste}, 100))
