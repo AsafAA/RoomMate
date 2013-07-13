@@ -43,21 +43,26 @@ class Backend():
         self.client = MongoClient()
         self.db = self.client.main_database
         # Collection for usernames and logins
-        # Clean for dev purposes
-        try:
-            self.db.groups.drop()
-        except:
-            pass
         self.groups = self.db.groups
-        self.users_group_map = dict()
-        self.broadcast_times = dict()
-        self.min_threshes = dict()
+        self.sync_data = self.db.sync_data
+        users_group_map = {'ID': 'UGM', 'Data': dict()}
+        broadcast_times = {'ID': 'BT', 'Data': dict()}
+        min_threshes = {'ID': 'MT', 'Data': dict()}
+        self.sync_data.insert(users_group_map)
+        self.sync_data.insert(broadcast_times)
+        self.sync_data.insert(min_threshes)
 
     def _get_group(self, group_id):
         return decode_group(self.groups.find_one({'ID': group_id})['Data'])
+    
+    def _get_sync(self, data_id):
+        return self.sync_data.find_one({'ID': data_id})['Data']
 
     def _update_group(self, group_id, data):
         self.groups.update({'ID': group_id}, {'ID': group_id, 'Data': encode_group(data)})
+
+    def _update_sync(self, dict_id, data):
+        self.sync_data.update({'ID': dict_id}, {'ID': dict_id, 'Data': data})
 
     def _get_loc_map(self, group_id, my_id):
         filtered_groups = {}
@@ -72,13 +77,17 @@ class Backend():
         group.phone_name_map.pop(phone_id, None)
         group.phone_loc_map.pop(phone_id, None)
         self._update_group(group_id, group)
-        self.users_group_map.pop(phone_id, None)
+        users_group_map = self._get_sync('UGM')
+        users_group_map.pop(phone_id, None)
+        self._update_sync('UGM', users_group_map)
 
     def add_user(self, group_id, phone_id, phone_name, toggle_state):
-        if phone_id in self.users_group_map.keys():
-            self._remove_user(self.users_group_map[phone_id], phone_id)
-        self.users_group_map[phone_id] = group_id
-        
+        users_group_map = self._get_sync('UGM')
+        if phone_id in users_group_map.keys():
+            self._remove_user(users_group_map[phone_id], phone_id)
+        users_group_map[phone_id] = group_id
+        self._update_sync('UGM', users_group_map)
+       
         try:
             data = self._get_group(group_id)
         except:
@@ -86,7 +95,7 @@ class Backend():
             doc = {'ID': group_id,
                    'Data': encode_group(data)}
             self.groups.insert(doc)
-        
+       
         data.phone_name_map[phone_id] = phone_name
         data.phone_loc_map[phone_id] = None
         data.phone_dnd_map[phone_id] = toggle_state
@@ -103,15 +112,17 @@ class Backend():
         filtered_groups = self._get_loc_map(group_id, phone_id)
 
         # Reset phone pairs that meet the time threshold
-        for party_pair in self.broadcast_times.keys():
-            time_diff = time.time() - self.broadcast_times[party_pair]
+        broadcast_times = self._get_sync('BT')
+        min_threshes = self._get_sync('MT')
+        for party_pair in broadcast_times.keys():
+            time_diff = time.time() - broadcast_times[party_pair]
             if time_diff > WAIT:
-                self.broadcast_times.pop(party_pair, None)
+                broadcast_times.pop(party_pair, None)
                 try:
-                    self.min_threshes.pop(party_pair, None)
+                    min_threshes.pop(party_pair, None)
                 except:
                     pass
-        
+
         # Go through thresholds, should be smallest to largest
         for thresh in THRESHES:
             offending_ids = multipleUserThresh((phone_id, group.phone_loc_map[phone_id]), filtered_groups, thresh)
@@ -121,14 +132,16 @@ class Backend():
                     name = group.phone_name_map[offending_id]
                     party_pair = [offending_id, phone_id]
                     party_pair.sort()
-                    party_pair = tuple(party_pair)
+                    party_pair = party_pair[0] + '_' + party_pair[1]
                     # Valid time pairs should have been reset, ensure if we see a smaller thresh we notify
-                    if party_pair not in self.broadcast_times.keys() or thresh < self.min_threshes[party_pair]:
+                    if party_pair not in broadcast_times.keys() or thresh < min_threshes[party_pair]:
                             print 'Notification to {0}: {1} is within {2} meters!'.format(name, my_name, thresh)
                             print 'Notification to {0}: {1} is within {2} meters!'.format(my_name, name, thresh)
-                            self.broadcast_times[party_pair] = time.time()
-                            self.min_threshes[party_pair] = thresh
+                            broadcast_times[party_pair] = time.time()
+                            min_threshes[party_pair] = thresh
 
+        self._update_sync('BT', broadcast_times)
+        self._update_sync('MT', min_threshes)
         return offending_names
 
 
@@ -163,7 +176,7 @@ def test():
     backend.update_location(group_id_3, phone_id_3, HASTE)
 
     # Test location update to shorter distance
-    # Fifth update should notify pairs (1, 2) as distance is
+    # Fifth update should notify pairs (1, 2) (1, 3) as distance is
     # shorter
     backend.update_location(group_id_2, phone_id_2, AEPI)
     
@@ -221,4 +234,5 @@ def update_location():
 
 backend = Backend()
 if __name__ == '__main__':
-    app.run()
+    #app.run()
+    test()
