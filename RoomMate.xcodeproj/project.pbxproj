@@ -17,8 +17,20 @@
 		FA94D7B7179104BD004F4330 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA94D7B6179104BD004F4330 /* Default@2x.png */; };
 		FA94D7B9179104BD004F4330 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA94D7B8179104BD004F4330 /* Default-568h@2x.png */; };
 		FA94D7BC179104BD004F4330 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA94D7BA179104BD004F4330 /* MainStoryboard.storyboard */; };
-		FA94D7BF179104BD004F4330 /* RMMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D7BE179104BD004F4330 /* RMMainViewController.m */; };
-		FA94D7C2179104BD004F4330 /* RMFlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D7C1179104BD004F4330 /* RMFlipsideViewController.m */; };
+		FA94D7BF179104BD004F4330 /* RMKnobViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D7BE179104BD004F4330 /* RMKnobViewController.m */; };
+		FA94D7D01791113C004F4330 /* RMLocationUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D7CF1791113B004F4330 /* RMLocationUpdater.m */; };
+		FA94D7D217911206004F4330 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA94D7D117911206004F4330 /* CoreLocation.framework */; };
+		FA94D7DE17912FAC004F4330 /* RMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D7DD17912FAC004F4330 /* RMSettingsViewController.m */; };
+		FA94D7EF17915EBD004F4330 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA94D7EE17915EBD004F4330 /* MessageUI.framework */; };
+		FA94D7F2179163A7004F4330 /* RMSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D7F1179163A7004F4330 /* RMSettings.m */; };
+		FA94D7F517916FE0004F4330 /* RMWelcomeFinishViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D7F417916FE0004F4330 /* RMWelcomeFinishViewController.m */; };
+		FA94D7F81791710D004F4330 /* RMWelcomeWaitingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D7F71791710D004F4330 /* RMWelcomeWaitingViewController.m */; };
+		FA94D7FB17917315004F4330 /* RMWelcomeStartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D7FA17917315004F4330 /* RMWelcomeStartViewController.m */; };
+		FA94D7FF179180D2004F4330 /* RMMessager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D7FE179180D2004F4330 /* RMMessager.m */; };
+		FA94D80217918320004F4330 /* RMWelcomeGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D80117918320004F4330 /* RMWelcomeGroupViewController.m */; };
+		FA94D80517918EAE004F4330 /* RMGroupID.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D80417918EAD004F4330 /* RMGroupID.m */; };
+		FA94D808179194D7004F4330 /* RMUsername.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D807179194D7004F4330 /* RMUsername.m */; };
+		FA94D80B1791AA17004F4330 /* RMAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA94D80A1791AA17004F4330 /* RMAPI.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,10 +48,32 @@
 		FA94D7B6179104BD004F4330 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		FA94D7B8179104BD004F4330 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		FA94D7BB179104BD004F4330 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
-		FA94D7BD179104BD004F4330 /* RMMainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RMMainViewController.h; sourceTree = "<group>"; };
-		FA94D7BE179104BD004F4330 /* RMMainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RMMainViewController.m; sourceTree = "<group>"; };
-		FA94D7C0179104BD004F4330 /* RMFlipsideViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RMFlipsideViewController.h; sourceTree = "<group>"; };
-		FA94D7C1179104BD004F4330 /* RMFlipsideViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RMFlipsideViewController.m; sourceTree = "<group>"; };
+		FA94D7BD179104BD004F4330 /* RMKnobViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RMKnobViewController.h; sourceTree = "<group>"; };
+		FA94D7BE179104BD004F4330 /* RMKnobViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RMKnobViewController.m; sourceTree = "<group>"; };
+		FA94D7CE1791113B004F4330 /* RMLocationUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMLocationUpdater.h; sourceTree = "<group>"; };
+		FA94D7CF1791113B004F4330 /* RMLocationUpdater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMLocationUpdater.m; sourceTree = "<group>"; };
+		FA94D7D117911206004F4330 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		FA94D7DC17912FAC004F4330 /* RMSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMSettingsViewController.h; sourceTree = "<group>"; };
+		FA94D7DD17912FAC004F4330 /* RMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMSettingsViewController.m; sourceTree = "<group>"; };
+		FA94D7EE17915EBD004F4330 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		FA94D7F0179163A7004F4330 /* RMSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMSettings.h; sourceTree = "<group>"; };
+		FA94D7F1179163A7004F4330 /* RMSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMSettings.m; sourceTree = "<group>"; };
+		FA94D7F317916FE0004F4330 /* RMWelcomeFinishViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMWelcomeFinishViewController.h; sourceTree = "<group>"; };
+		FA94D7F417916FE0004F4330 /* RMWelcomeFinishViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMWelcomeFinishViewController.m; sourceTree = "<group>"; };
+		FA94D7F61791710D004F4330 /* RMWelcomeWaitingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMWelcomeWaitingViewController.h; sourceTree = "<group>"; };
+		FA94D7F71791710D004F4330 /* RMWelcomeWaitingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMWelcomeWaitingViewController.m; sourceTree = "<group>"; };
+		FA94D7F917917315004F4330 /* RMWelcomeStartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMWelcomeStartViewController.h; sourceTree = "<group>"; };
+		FA94D7FA17917315004F4330 /* RMWelcomeStartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMWelcomeStartViewController.m; sourceTree = "<group>"; };
+		FA94D7FD179180D2004F4330 /* RMMessager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMMessager.h; sourceTree = "<group>"; };
+		FA94D7FE179180D2004F4330 /* RMMessager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMMessager.m; sourceTree = "<group>"; };
+		FA94D80017918320004F4330 /* RMWelcomeGroupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMWelcomeGroupViewController.h; sourceTree = "<group>"; };
+		FA94D80117918320004F4330 /* RMWelcomeGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMWelcomeGroupViewController.m; sourceTree = "<group>"; };
+		FA94D80317918EAD004F4330 /* RMGroupID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMGroupID.h; sourceTree = "<group>"; };
+		FA94D80417918EAD004F4330 /* RMGroupID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMGroupID.m; sourceTree = "<group>"; };
+		FA94D806179194D7004F4330 /* RMUsername.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMUsername.h; sourceTree = "<group>"; };
+		FA94D807179194D7004F4330 /* RMUsername.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMUsername.m; sourceTree = "<group>"; };
+		FA94D8091791AA16004F4330 /* RMAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMAPI.h; sourceTree = "<group>"; };
+		FA94D80A1791AA17004F4330 /* RMAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMAPI.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +81,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA94D7EF17915EBD004F4330 /* MessageUI.framework in Frameworks */,
+				FA94D7D217911206004F4330 /* CoreLocation.framework in Frameworks */,
 				FA94D7A3179104BD004F4330 /* UIKit.framework in Frameworks */,
 				FA94D7A5179104BD004F4330 /* Foundation.framework in Frameworks */,
 				FA94D7A7179104BD004F4330 /* CoreGraphics.framework in Frameworks */,
@@ -76,6 +112,8 @@
 		FA94D7A1179104BD004F4330 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA94D7EE17915EBD004F4330 /* MessageUI.framework */,
+				FA94D7D117911206004F4330 /* CoreLocation.framework */,
 				FA94D7A2179104BD004F4330 /* UIKit.framework */,
 				FA94D7A4179104BD004F4330 /* Foundation.framework */,
 				FA94D7A6179104BD004F4330 /* CoreGraphics.framework */,
@@ -88,11 +126,20 @@
 			children = (
 				FA94D7B1179104BD004F4330 /* RMAppDelegate.h */,
 				FA94D7B2179104BD004F4330 /* RMAppDelegate.m */,
+				FA94D80317918EAD004F4330 /* RMGroupID.h */,
+				FA94D80417918EAD004F4330 /* RMGroupID.m */,
+				FA94D806179194D7004F4330 /* RMUsername.h */,
+				FA94D807179194D7004F4330 /* RMUsername.m */,
+				FA94D7F0179163A7004F4330 /* RMSettings.h */,
+				FA94D7F1179163A7004F4330 /* RMSettings.m */,
+				FA94D7CE1791113B004F4330 /* RMLocationUpdater.h */,
+				FA94D7CF1791113B004F4330 /* RMLocationUpdater.m */,
+				FA94D7FD179180D2004F4330 /* RMMessager.h */,
+				FA94D7FE179180D2004F4330 /* RMMessager.m */,
+				FA94D8091791AA16004F4330 /* RMAPI.h */,
+				FA94D80A1791AA17004F4330 /* RMAPI.m */,
 				FA94D7BA179104BD004F4330 /* MainStoryboard.storyboard */,
-				FA94D7BD179104BD004F4330 /* RMMainViewController.h */,
-				FA94D7BE179104BD004F4330 /* RMMainViewController.m */,
-				FA94D7C0179104BD004F4330 /* RMFlipsideViewController.h */,
-				FA94D7C1179104BD004F4330 /* RMFlipsideViewController.m */,
+				FA94D7FC17917DA1004F4330 /* View Controllers */,
 				FA94D7A9179104BD004F4330 /* Supporting Files */,
 			);
 			path = RoomMate;
@@ -110,6 +157,25 @@
 				FA94D7B8179104BD004F4330 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FA94D7FC17917DA1004F4330 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FA94D7F917917315004F4330 /* RMWelcomeStartViewController.h */,
+				FA94D7FA17917315004F4330 /* RMWelcomeStartViewController.m */,
+				FA94D80017918320004F4330 /* RMWelcomeGroupViewController.h */,
+				FA94D80117918320004F4330 /* RMWelcomeGroupViewController.m */,
+				FA94D7F61791710D004F4330 /* RMWelcomeWaitingViewController.h */,
+				FA94D7F71791710D004F4330 /* RMWelcomeWaitingViewController.m */,
+				FA94D7F317916FE0004F4330 /* RMWelcomeFinishViewController.h */,
+				FA94D7F417916FE0004F4330 /* RMWelcomeFinishViewController.m */,
+				FA94D7BD179104BD004F4330 /* RMKnobViewController.h */,
+				FA94D7BE179104BD004F4330 /* RMKnobViewController.m */,
+				FA94D7DC17912FAC004F4330 /* RMSettingsViewController.h */,
+				FA94D7DD17912FAC004F4330 /* RMSettingsViewController.m */,
+			);
+			name = "View Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -181,8 +247,18 @@
 			files = (
 				FA94D7AF179104BD004F4330 /* main.m in Sources */,
 				FA94D7B3179104BD004F4330 /* RMAppDelegate.m in Sources */,
-				FA94D7BF179104BD004F4330 /* RMMainViewController.m in Sources */,
-				FA94D7C2179104BD004F4330 /* RMFlipsideViewController.m in Sources */,
+				FA94D7BF179104BD004F4330 /* RMKnobViewController.m in Sources */,
+				FA94D7D01791113C004F4330 /* RMLocationUpdater.m in Sources */,
+				FA94D7DE17912FAC004F4330 /* RMSettingsViewController.m in Sources */,
+				FA94D7F2179163A7004F4330 /* RMSettings.m in Sources */,
+				FA94D7F517916FE0004F4330 /* RMWelcomeFinishViewController.m in Sources */,
+				FA94D7F81791710D004F4330 /* RMWelcomeWaitingViewController.m in Sources */,
+				FA94D7FB17917315004F4330 /* RMWelcomeStartViewController.m in Sources */,
+				FA94D7FF179180D2004F4330 /* RMMessager.m in Sources */,
+				FA94D80217918320004F4330 /* RMWelcomeGroupViewController.m in Sources */,
+				FA94D80517918EAE004F4330 /* RMGroupID.m in Sources */,
+				FA94D808179194D7004F4330 /* RMUsername.m in Sources */,
+				FA94D80B1791AA17004F4330 /* RMAPI.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,6 +343,10 @@
 		FA94D7C6179104BD004F4330 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Documents/FacebookSDK\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RoomMate/RoomMate-Prefix.pch";
 				INFOPLIST_FILE = "RoomMate/RoomMate-Info.plist";
@@ -278,6 +358,10 @@
 		FA94D7C7179104BD004F4330 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Documents/FacebookSDK\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RoomMate/RoomMate-Prefix.pch";
 				INFOPLIST_FILE = "RoomMate/RoomMate-Info.plist";
