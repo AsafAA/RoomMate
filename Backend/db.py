@@ -19,8 +19,8 @@ def decode_user(doc):
 
 
 class User():
-    def __init__(self, fb_id, location, neighbors):
-        self.fb_id = fb_id
+    def __init__(self, fb_token, location, neighbors):
+        self.fb_token = fb_token
         self.location = location
         self.neighbors = neighbors
 
@@ -28,37 +28,38 @@ class User():
         self.location = location
 
 class Backend():
+    # _id is the public facebook id
+    # _token is the private facebook token for interfacing
     def __init__(self):
         self.client = MongoClient()
         self.db = self.client.main_database
         # Collection for usernames and logins
         self.users = self.db.users
-        self.user_ids = {}
 
     def _get_user_info(self, fb_id):
         # Returns document corresponding to a particular user
         return self.users.find_one({'ID': fb_id})
 
     def add_user(self, fb_id, fb_token):
-        self.user_ids[fb_id] = fb_token
         data = User(fb_token, None, [])
-        doc = {'ID': fb_token,
+        doc = {'ID': fb_id,
                'Data': encode_user(data)}
         self.users.insert(doc)
         return True
 
     def get_user(self, fb_id):
         return decode_user(self._get_user_info(fb_id)['Data'])
-    
-    def add_link(self, my_token, friend_id):
-        # Send notification to friend
-        self.pending.append((my_token, friend_id))
+
+    def add_link(self, my_token, my_id, friend_id):
+        # TODO Send notification to friend
         return
 
-    def confirm_link(self, my_id, friend_id):
+    def confirm_link(self, my_token, my_id, friend_id):
+        # TODO Confirm notification here
         me = self.get_user(my_id)
         friend = self.get_user(friend_id)
-        me.neighbors.append(friend_id)
+        me.neighbors.append(friend)
+        friend.neighbors.append(me)
 
 def main():
     backend = Backend()
