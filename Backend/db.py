@@ -1,19 +1,22 @@
 from pymongo import MongoClient
-from sets import Set
+from haversine import multipleUserThresh
 
+AEPI = (37.867062, -122.251914, 0)
+TOPDOG = (37.868315, -122.257472, 0)
+CHANNING = (37.867551, -122.254256, 3.2)
+HASTE = (37.866611, -122.25409, 4.3)
+THRESH = 1000
 
 def encode_user(user):
     return {'_type': 'User',
-            'username': user.username,
-            'fb_id': user.fb_id,
+            'fb_token': user.fb_token,
             'location': user.location,
             'neighbors': user.neighbors}
 
 
 def decode_user(doc):
     assert doc['_type'] == 'User'
-    return User(doc['username'],
-                doc['fb_id'],
+    return User(doc['fb_token'],
                 doc['location'],
                 doc['neighbors'])
 
@@ -24,8 +27,6 @@ class User():
         self.location = location
         self.neighbors = neighbors
 
-    def update_location(self, location):
-        self.location = location
 
 class Backend():
     # _id is the public facebook id
@@ -34,11 +35,27 @@ class Backend():
         self.client = MongoClient()
         self.db = self.client.main_database
         # Collection for usernames and logins
+        # Clean for dev purposes
+        try:
+            self.db.users.drop()
+        except:
+            pass
         self.users = self.db.users
 
-    def _get_user_info(self, fb_id):
-        # Returns document corresponding to a particular user
-        return self.users.find_one({'ID': fb_id})
+    def _get_user(self, fb_id):
+        return decode_user(self.users.find_one({'ID': fb_id})['Data'])
+
+    def _update_user(self, fb_id, data):
+        self.users.update({'ID': fb_id}, {'ID': fb_id, 'Data': encode_user(data)})
+
+    def _get_neighbor_locs(self, my_id):
+        loc_dict = {}
+        me = self._get_user(my_id)
+        for n in me.neighbors:
+            friend = self._get_user(n)
+            if friend.location:
+                loc_dict[n] = tuple(friend.location)
+        return loc_dict
 
     def add_user(self, fb_id, fb_token):
         data = User(fb_token, None, [])
@@ -47,37 +64,51 @@ class Backend():
         self.users.insert(doc)
         return True
 
-    def get_user(self, fb_id):
-        return decode_user(self._get_user_info(fb_id)['Data'])
+    def update_location(self, fb_id, location):
+        user = self._get_user(fb_id)
+        user.location = location
+        self._update_user(fb_id, user)
+        neighbor_locs = self._get_neighbor_locs(fb_id)
+        return multipleUserThresh(self._get_user(fb_id).location, neighbor_locs, THRESH)
 
-    def add_link(self, my_token, my_id, friend_id):
-        # TODO Send notification to friend
+    def request_link(self, my_id, friend_id):
+        # TODO Send link notification here
         return
 
-    def confirm_link(self, my_token, my_id, friend_id):
-        # TODO Confirm notification here
-        me = self.get_user(my_id)
-        friend = self.get_user(friend_id)
-        me.neighbors.append(friend)
-        friend.neighbors.append(me)
+    def confirm_link(self, my_id, friend_id):
+        # TODO Send confirm notification here
+        me = self._get_user(my_id)
+        friend = self._get_user(friend_id)
+        me.neighbors.append(friend_id)
+        friend.neighbors.append(my_id)
+        self._update_user(my_id, me)
+        self._update_user(friend_id, friend)
+
+       
 
 def main():
     backend = Backend()
 
-    test_login = 'Test'
-    test_password = 'Password'
+    id_1 = 'User 1'
+    token_1 = 'Token 1'
 
-    backend.add_user(test_login, test_password)
+    id_2 = 'User 2'
+    token_2 = 'Token 2'
 
-    res_val = backend.add_user(test_login, test_password)
-    if not res_val:
-        print 'User add failed'
-        return False
+    id_3 = 'User 3'
+    token_3 = 'Token 3'
 
-    # Location: (longitude, latitude, accuracy)
-    user = backend.login(test_login, test_password)
-    user.update_location((10, 10, 10))
-    print user.location
+    backend.add_user(id_1, token_1)
+    backend.add_user(id_2, token_2)
+    backend.add_user(id_3, token_3)
+
+    backend.confirm_link(id_1, id_2)
+    backend.confirm_link(id_1, id_3)
+
+    print backend.update_location(id_1, AEPI)
+    print backend.update_location(id_2, TOPDOG)
+    print backend.update_location(id_3, HASTE)
+
 
 
 if __name__ == '__main__':
