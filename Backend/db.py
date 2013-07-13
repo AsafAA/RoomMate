@@ -1,3 +1,4 @@
+import time
 from pymongo import MongoClient
 from haversine import multipleUserThresh
 
@@ -5,111 +6,132 @@ AEPI = (37.867062, -122.251914, 0)
 TOPDOG = (37.868315, -122.257472, 0)
 CHANNING = (37.867551, -122.254256, 3.2)
 HASTE = (37.866611, -122.25409, 4.3)
-THRESH = 1000
 
-def encode_user(user):
-    return {'_type': 'User',
-            'fb_token': user.fb_token,
-            'location': user.location,
-            'neighbors': user.neighbors}
+THRESH = 1000 # meters
+WAIT = 5 # seconds
 
 
-def decode_user(doc):
-    assert doc['_type'] == 'User'
-    return User(doc['fb_token'],
-                doc['location'],
-                doc['neighbors'])
+def encode_group(group):
+    return {'_type': 'Group',
+            'group_id': group.group_id,
+            'phone_name_map': group.phone_name_map,
+            'phone_loc_map': group.phone_loc_map}
 
 
-class User():
-    def __init__(self, fb_token, location, neighbors):
-        self.fb_token = fb_token
-        self.location = location
-        self.neighbors = neighbors
+def decode_group(doc):
+    assert doc['_type'] == 'Group'
+    return Group(doc['group_id'],
+                 doc['phone_name_map'],
+                 doc['phone_loc_map'])
+
+
+class Group():
+    def __init__(self, group_id, phone_name_map, phone_loc_map):
+        self.group_id = group_id
+        self.phone_name_map = phone_name_map
+        self.phone_loc_map = phone_loc_map
 
 
 class Backend():
-    # _id is the public facebook id
-    # _token is the private facebook token for interfacing
     def __init__(self):
         self.client = MongoClient()
         self.db = self.client.main_database
         # Collection for usernames and logins
         # Clean for dev purposes
         try:
-            self.db.users.drop()
+            self.db.groups.drop()
         except:
             pass
-        self.users = self.db.users
+        self.groups = self.db.groups
+        self.users_group_map = dict()
+        self.broadcast_times = dict()
 
-    def _get_user(self, fb_id):
-        return decode_user(self.users.find_one({'ID': fb_id})['Data'])
+    def _get_group(self, group_id):
+        return decode_group(self.groups.find_one({'ID': group_id})['Data'])
 
-    def _update_user(self, fb_id, data):
-        self.users.update({'ID': fb_id}, {'ID': fb_id, 'Data': encode_user(data)})
+    def _update_group(self, group_id, data):
+        self.groups.update({'ID': group_id}, {'ID': group_id, 'Data': encode_group(data)})
 
-    def _get_neighbor_locs(self, my_id):
-        loc_dict = {}
-        me = self._get_user(my_id)
-        for n in me.neighbors:
-            friend = self._get_user(n)
-            if friend.location:
-                loc_dict[n] = tuple(friend.location)
-        return loc_dict
+    def _get_loc_map(self, group_id, my_id):
+        filtered_groups = {}
+        group = self._get_group(group_id)
+        for phone in group.phone_loc_map.keys():
+            if phone != my_id and group.phone_loc_map[phone] is not None:
+                filtered_groups[phone] = group.phone_loc_map[phone]
+        return filtered_groups
 
-    def add_user(self, fb_id, fb_token):
-        data = User(fb_token, None, [])
-        doc = {'ID': fb_id,
-               'Data': encode_user(data)}
-        self.users.insert(doc)
+    def add_user(self, group_id, phone_id, phone_name):
+        try:
+            data = self._get_group(group_id)
+        except:
+            data = Group(group_id, dict(), dict())
+            doc = {'ID': group_id,
+                   'Data': encode_group(data)}
+            self.groups.insert(doc)
+
+        data.phone_name_map[phone_id] = phone_name
+        data.phone_loc_map[phone_id] = None
+        self._update_group(group_id, data)
+        if phone_id in self.users_group_map.keys():
+            old_group = self._get_group(self.users_group_map[phone_id])
+            old_group.phone_name_map.pop(phone_id, None)
+            old_group.phone_loc_map.pop(phone_id, None)
+        self.users_group_map[phone_id] = group_id
         return True
 
-    def update_location(self, fb_id, location):
-        user = self._get_user(fb_id)
-        user.location = location
-        self._update_user(fb_id, user)
-        neighbor_locs = self._get_neighbor_locs(fb_id)
-        return multipleUserThresh(self._get_user(fb_id).location, neighbor_locs, THRESH)
+    def update_location(self, group_id, phone_id, location):
+        group = self._get_group(group_id)
+        my_name = group.phone_name_map[phone_id]
+        group.phone_loc_map[phone_id] = location
+        self._update_group(group_id, group)
+        filtered_groups = self._get_loc_map(group_id, phone_id)
+        offending_ids = multipleUserThresh((phone_id, group.phone_loc_map[phone_id]), filtered_groups, THRESH)
+        offending_names = [group.phone_name_map[phone_id_bad] for phone_id_bad in offending_ids]
+        if offending_ids:
+            all_offenders = ''
+            for offending_id in offending_ids:
+                name = group.phone_name_map[offending_id]
+                party_pair = [offending_id, phone_id]
+                party_pair.sort()
+                party_pair = tuple(party_pair)
+                if party_pair not in self.broadcast_times.keys() or time.time() - self.broadcast_times[party_pair] > WAIT:
+                    print 'Notification to {0}: {1} is within {2} meters!'.format(name, my_name, THRESH)
+                    all_offenders = all_offenders + name + ', '
+                    self.broadcast_times[party_pair] = time.time()
+            if all_offenders != '':
+                print 'Notification to {0}: {1} is/are within {2} meters!\n'.format(my_name, all_offenders[:-2], THRESH)
 
-    def request_link(self, my_id, friend_id):
-        # TODO Send link notification here
-        return
+        return offending_names
 
-    def confirm_link(self, my_id, friend_id):
-        # TODO Send confirm notification here
-        me = self._get_user(my_id)
-        friend = self._get_user(friend_id)
-        me.neighbors.append(friend_id)
-        friend.neighbors.append(my_id)
-        self._update_user(my_id, me)
-        self._update_user(friend_id, friend)
-
-       
 
 def main():
     backend = Backend()
 
-    id_1 = 'User 1'
-    token_1 = 'Token 1'
+    phone_id_1 = 'Alpha'
+    phone_name_1 = 'Phone 1'
+    group_id_1 = 'Group'
 
-    id_2 = 'User 2'
-    token_2 = 'Token 2'
+    phone_id_2 = 'Beta'
+    phone_name_2 = 'Phone 2'
+    group_id_2 = 'Group'
 
-    id_3 = 'User 3'
-    token_3 = 'Token 3'
+    phone_id_3 = 'Charlie'
+    phone_name_3 = 'Phone 3'
+    group_id_3 = 'Group'
 
-    backend.add_user(id_1, token_1)
-    backend.add_user(id_2, token_2)
-    backend.add_user(id_3, token_3)
+    backend.add_user(group_id_1, phone_id_1, phone_name_1)
+    backend.add_user(group_id_2, phone_id_2, phone_name_2)
+    backend.add_user(group_id_3, phone_id_3, phone_name_3)
 
-    backend.confirm_link(id_1, id_2)
-    backend.confirm_link(id_1, id_3)
+    backend.update_location(group_id_1, phone_id_1, AEPI)
+    backend.update_location(group_id_2, phone_id_2, TOPDOG)
+    backend.update_location(group_id_3, phone_id_3, HASTE)
+   
+    time.sleep(6)
 
-    print backend.update_location(id_1, AEPI)
-    print backend.update_location(id_2, TOPDOG)
-    print backend.update_location(id_3, HASTE)
-
-
+    backend.update_location(group_id_1, phone_id_1, AEPI)
+    backend.update_location(group_id_2, phone_id_2, TOPDOG)
+    backend.update_location(group_id_3, phone_id_3, HASTE)
 
 if __name__ == '__main__':
     main()
