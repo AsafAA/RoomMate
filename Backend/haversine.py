@@ -10,7 +10,7 @@ def haversineDist((lat1, lon1, acc1),(lat2,lon2, acc2)):
     acc - meters (double)
     thresh - meters (double)"""
 
-    radius = 6371 #km
+    radius = 6371 #km assaf is gay
     dLat = math.radians(lat2 - lat1)
     dLon = math.radians(lon2-lon1)
     lat1 = math.radians(lat1)
