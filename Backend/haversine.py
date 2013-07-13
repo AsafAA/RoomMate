@@ -29,14 +29,14 @@ def isWithinThresh(coord1, coord2, thresh):
 
     return (haversineDist(coord1, coord2) <= thresh)
 
-def multipleUserThresh(user_coord, roommateDict, thresh):
+def multipleUserThresh(user, roommateDict, thresh):
     """returns the a list of the IDs of the users that are within thresh distance
 
     arguments:
-    user_coord - (lat, lon, acc)
+    user_coord - (user_id, (lat, lon, acc))
     roommateList - {'id': (lat, lon, acc), 'id':(lat, lon, acc)...}
     thresh - meters (double) """
     
-    return [key for key in roommateDict.keys() if isWithinThresh(user_coord, roommateDict[key], thresh)]
+    return [key for key in roommateDict.keys() if (isWithinThresh(user[1], roommateDict[key], thresh) and key != user[0])]
 
 
