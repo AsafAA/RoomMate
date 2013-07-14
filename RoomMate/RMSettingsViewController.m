@@ -18,18 +18,6 @@
     [self saveName];
 }
 
-- (IBAction)newGroup:(id)sender {
-    RMSettings *settings = [RMSettings settings];
-    settings.groupID = [[RMGroupID alloc] init];
-
-    [self addRoommates:self];
-}
-
-- (IBAction)addRoommates:(id)sender {
-	RMMessager *messager = [RMMessager messager];
-    [messager showOnParent:self];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     RMSettings *settings = [RMSettings settings];
     self.nameField.text = settings.username.string;
@@ -47,6 +35,24 @@
         self.nameField.text = settings.username.string;
     } else {
         settings.username = [[RMUsername alloc] initWithString:name];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (indexPath.section == 1) {
+        if (indexPath.row == 0) {
+            RMMessager *messager = [RMMessager messager];
+            [messager showOnParent:self];
+        } else {
+            RMSettings *settings = [RMSettings settings];
+            settings.groupID = [[RMGroupID alloc] init];
+            [settings save];
+            
+            RMMessager *messager = [RMMessager messager];
+            [messager showOnParent:self];
+        }
     }
 }
 

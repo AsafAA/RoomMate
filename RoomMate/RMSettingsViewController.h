@@ -6,6 +6,5 @@
 
 - (IBAction)done:(id)sender;
 - (IBAction)dismissKeyboard:(id)sender;
-- (IBAction)addRoommates:(id)sender;
 
 @end
