@@ -8,6 +8,7 @@
 @property (strong, nonatomic) RMUsername *username;
 @property (strong, nonatomic) RMGroupID *groupID;
 @property (assign, nonatomic) BOOL privacyMode;
+@property (strong, atomic) NSString *deviceToken;
 
 + (RMSettings *)settings;
 

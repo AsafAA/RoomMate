@@ -2,6 +2,6 @@
 
 @interface RMKnobViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UISwitch *privacyModeSwitch;
+@property (weak, nonatomic) IBOutlet UIButton *button;
 
 @end
